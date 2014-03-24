@@ -21,7 +21,7 @@ public class AnalysisMain {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
-		File file = new File("100tusen.txt");
+		File file = new File("17Sudoku.txt");
 		BufferedReader buffReader = new BufferedReader(new FileReader(file));
 		HashMap<String,SudokuInfo> allOccurrences = new HashMap<String, SudokuInfo>();
 		Parser parser = new Parser();

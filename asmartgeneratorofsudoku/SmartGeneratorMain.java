@@ -57,10 +57,6 @@ private final static int ATTEMPT_LIMIT = 20;//LOL
 								bestY = y;
 								bestPotentialCount = potentialValuesInHouse;
 								
-								if(20-(j)*2 == potentialValuesInHouse){
-									grid.setCellValue(bestX, bestY, numberToPlace);
-									placed = true;
-								}
 							}
 						}
 						if(attempts > ATTEMPT_LIMIT){
@@ -76,9 +72,9 @@ private final static int ATTEMPT_LIMIT = 20;//LOL
 			 if(state == 1){
 				 success = true;
 			 }
-			if(numberOfTries%1 == 0){
+			//if(numberOfTries%1000 == 0){
 				System.out.println("Number of tries:" + numberOfTries);
-			}
+			//}
 			numberOfTries++;
 		}
 		
