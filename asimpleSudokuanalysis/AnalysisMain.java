@@ -26,7 +26,7 @@ public class AnalysisMain {
 		HashMap<String,SudokuInfo> allOccurrences = new HashMap<String, SudokuInfo>();
 		Parser parser = new Parser();
 		Solver solver;
-		for(int i =0; i<10;i++){
+		for(int i =0; i<1000;i++){
 			Grid grid = new Grid();
 			int[] occurrences = new int[9];
 			String sudoku =buffReader.readLine();

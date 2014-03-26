@@ -2,14 +2,14 @@ package asimplesudokutransformationsearch;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Set;
 
 import parsingstuff.Parser;
+import diuf.sudoku.Cell;
 import diuf.sudoku.Grid;
 import diuf.sudoku.solver.Solver;
 import diuf.sudoku.solver.checks.BruteForceAnalysis;
 
-public class RecursiveSudokuTransformation {
+public class RecursiveSudokuTransformation2 {
 
 	private static Grid grid; // The Sudoku grid
     private static Solver solver; // The Sudoku solver
@@ -37,7 +37,7 @@ public class RecursiveSudokuTransformation {
 		
 		toCalc.add(canonTransformer.toCanonical(grid));
 		ArrayList<String> calculated = new ArrayList<String>();
-		recursiveTransformation(toCalc,calculated,2);
+		recursiveTransformation(toCalc,calculated,1);
 		
 		System.out.println(calculated.size());
 		for(String string: calculated){
@@ -67,7 +67,7 @@ public class RecursiveSudokuTransformation {
 				continue;
 			}
 			System.out.print("Depth: " + depth + " ,calculating: " + counter +"/" + size + " . . . ");
-			ArrayList<String> newSudokus = transformSudoku(sudoku);
+			ArrayList<String> newSudokus = transformSudoku2(sudoku);
 			newToCalc.addAll(newSudokus);
 			calculated.add(sudoku);	
 			System.out.println("Found "+ newSudokus.size() + " new Sudokus");
@@ -76,49 +76,69 @@ public class RecursiveSudokuTransformation {
 		return recursiveTransformation(newToCalc,calculated,depth);	
 	}
 
-	public static ArrayList<String> transformSudoku(String sudoku) {
+	public static ArrayList<String> transformSudoku2(String sudoku) {
 		ArrayList<String> newSudokus = new ArrayList<String>();
 		Grid grid = new Grid();
 		Solver solver = new Solver(grid);
 		Parser parser = new Parser();
 		parser.parseLine(grid, sudoku);
-		for(int x=0;x<9;x++){
-			for(int y=0;y<9;y++){
-				if(grid.getCell(x, y).isEmpty()){
-					continue;
+		
+		ArrayList<Cell> cells = new ArrayList<Cell>();
+		for(int i=0;i<9;i++){
+			for(int j=0;j<9;j++){
+				if(grid.getCellValue(i, j) != 0){
+					cells.add(grid.getCell(i, j));
 				}
-				int val = grid.getCellValue(x, y);
-				grid.setCellValue(x, y, 0);
+			}
+		}
+		for(int i =1;i<cells.size();i++){
+			System.out.print(i + "/"+cells.size()+ " ");
+			for(int j= 0;j<i;j++){
+				Cell cell1 = cells.get(i);
+				Cell cell2 = cells.get(j);
+				int cell1Old = cell1.getValue();
+				int cell2Old = cell2.getValue();
+				cell1.setValue(0);
+				cell2.setValue(0);
 				solver.rebuildPotentialValues();
-				for(int x2 =0;x2<9;x2++){
-					for(int y2=0;y2<9;y2++){
-						
-						for(int valInc = 1;valInc<10;valInc++){
-							if(x2 == x && y2 == y && valInc == val){
-								continue;
-							}
-							if(grid.getCell(x2, y2).hasPotentialValue(valInc)){
-								grid.setCellValue(x2, y2, valInc);
-								int sol = analyser.getCountSolutions(grid);
-								if(sol == 1){
-									//System.out.println(parser.parseGridToLine(grid));
+				for(int cell1Pos = 0;cell1Pos<81;cell1Pos++){
+					int x = cell1Pos%9;
+					int y = cell1Pos/9;
+					for(int cell1Val = 0;cell1Val<9;cell1Val++){
+						if(!grid.getCell(x, y).hasPotentialValue(cell1Val)){
+							continue;
+						}
+						grid.setCellValue(x, y, cell1Val);
+						solver.rebuildPotentialValues();
+						for(int cell2Pos = 0;cell2Pos<cell1Pos;cell2Pos++){
+							int x2 = cell2Pos%9;
+							int y2 = cell2Pos/9;
+							for(int cell2Val =0;cell2Val<9;cell2Val++){
+								if(!grid.getCell(x2,y2).hasPotentialValue(cell2Val)){
+									continue;
+								}
+								grid.setCellValue(x2, y2, cell2Val);
+								
+								if(analyser.getCountSolutions(grid) == 1){
+									System.out.println(canonTransformer.toCanonical(grid));
 									newSudokus.add(canonTransformer.toCanonical(grid));
 								}
-								grid.setCellValue(x2, y2, 0);
+								grid.setCellValue(x2, y2, 0);	
 							}
 						}
+						grid.setCellValue(x, y, 0);
 					}
 				}
-				grid.setCellValue(x, y, val);
+				cell1.setValue(cell1Old);
+				cell2.setValue(cell2Old);
 				
 				
 			}
 		}
 		
+		
+		
 		return newSudokus;
 	}
 	
-	
-
-
 }

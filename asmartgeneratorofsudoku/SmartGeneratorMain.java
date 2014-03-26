@@ -1,9 +1,12 @@
 package asmartgeneratorofsudoku;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+
+import asimplesudokutransformationsearch.RecursiveSudokuTransformation;
 
 import parsingstuff.Parser;
 import diuf.sudoku.Cell;
@@ -16,10 +19,12 @@ public class SmartGeneratorMain {
 
 
 private final static BruteForceAnalysis analyser = new BruteForceAnalysis(true);
+private static Parser parser;
 
 private final static int ATTEMPT_LIMIT = 20;//LOL
 	
 	public static void main(String[] args) {
+		parser = new Parser();
 		Scanner scan = new Scanner(System.in);
 		//Type format
 		String partition = scan.nextLine();
@@ -72,13 +77,19 @@ private final static int ATTEMPT_LIMIT = 20;//LOL
 			 if(state == 1){
 				 success = true;
 			 }
+			/*ArrayList<String> test = RecursiveSudokuTransformation.transformSudoku(parser.parseGridToLine(grid)); 
+			if(test.size() != 0){
+				for(String str: test){
+					System.out.println(str);
+					success = true;
+				}
+			}*/
 			//if(numberOfTries%1000 == 0){
 				System.out.println("Number of tries:" + numberOfTries);
 			//}
 			numberOfTries++;
 		}
 		
-		Parser parser = new Parser();
 		System.out.println(parser.parseGridToLine(grid));
 		
 		System.out.println(solver.getDifficulty());
