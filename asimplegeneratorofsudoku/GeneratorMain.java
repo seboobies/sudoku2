@@ -21,6 +21,7 @@ public class GeneratorMain {
 		Scanner scan = new Scanner(System.in);
 		//Type format
 		String partition = scan.nextLine();
+		long startTime = System.currentTimeMillis();
 		boolean success = false;
 		Grid grid = new Grid();
 		Solver solver = new Solver(grid);
@@ -63,8 +64,9 @@ public class GeneratorMain {
 		Parser parser = new Parser();
 		System.out.println(parser.parseGridToLine(grid));
 		
-		System.out.println(solver.getDifficulty());
-		
+		long endTime = System.currentTimeMillis();
+		System.out.println("Seconds elapsed: "+(float)(endTime-startTime)/1000);
+		System.out.println("Total number of tries: " + numberOfTries);
 		
 	}
 

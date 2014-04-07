@@ -37,13 +37,15 @@ public class RecursiveSudokuTransformation2 {
 		
 		toCalc.add(canonTransformer.toCanonical(grid));
 		ArrayList<String> calculated = new ArrayList<String>();
+		long startTime = System.currentTimeMillis();
 		recursiveTransformation(toCalc,calculated,1);
-		
+		long endTime = System.currentTimeMillis();
 		System.out.println(calculated.size());
 		for(String string: calculated){
 			System.out.println(string);
 		}
-		
+		System.out.println("Time elapsed:" + (float)(endTime-startTime)/1000);
+		System.out.println(calculated.size());
 
 	}
 
@@ -70,7 +72,7 @@ public class RecursiveSudokuTransformation2 {
 			ArrayList<String> newSudokus = transformSudoku2(sudoku);
 			newToCalc.addAll(newSudokus);
 			calculated.add(sudoku);	
-			System.out.println("Found "+ newSudokus.size() + " new Sudokus");
+			//System.out.println("Found "+ newSudokus.size() + " new Sudokus");
 		}
 		depth--;
 		return recursiveTransformation(newToCalc,calculated,depth);	
@@ -92,7 +94,7 @@ public class RecursiveSudokuTransformation2 {
 			}
 		}
 		for(int i =1;i<cells.size();i++){
-			System.out.print(i + "/"+cells.size()+ " ");
+			//System.out.print(i + "/"+cells.size()+ " ");
 			for(int j= 0;j<i;j++){
 				Cell cell1 = cells.get(i);
 				Cell cell2 = cells.get(j);
@@ -120,7 +122,7 @@ public class RecursiveSudokuTransformation2 {
 								grid.setCellValue(x2, y2, cell2Val);
 								
 								if(analyser.getCountSolutions(grid) == 1){
-									System.out.println(canonTransformer.toCanonical(grid));
+									//System.out.println(canonTransformer.toCanonical(grid));
 									newSudokus.add(canonTransformer.toCanonical(grid));
 								}
 								grid.setCellValue(x2, y2, 0);	

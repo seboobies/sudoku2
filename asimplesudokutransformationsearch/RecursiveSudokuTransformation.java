@@ -37,12 +37,14 @@ public class RecursiveSudokuTransformation {
 		
 		toCalc.add(canonTransformer.toCanonical(grid));
 		ArrayList<String> calculated = new ArrayList<String>();
-		recursiveTransformation(toCalc,calculated,2);
-		
+		long startTime = System.currentTimeMillis();
+		recursiveTransformation(toCalc,calculated,1);
+		long endTime = System.currentTimeMillis();
 		System.out.println(calculated.size());
 		for(String string: calculated){
 			System.out.println(string);
 		}
+		System.out.println("Time elapsed:" + (float)(endTime-startTime)/1000);
 		
 
 	}

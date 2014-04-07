@@ -21,7 +21,7 @@ public class SmartGeneratorMain {
 private final static BruteForceAnalysis analyser = new BruteForceAnalysis(true);
 private static Parser parser;
 
-private final static int ATTEMPT_LIMIT = 20;//LOL
+private final static int ATTEMPT_LIMIT = 5;//LOL
 	
 	public static void main(String[] args) {
 		parser = new Parser();
@@ -33,66 +33,68 @@ private final static int ATTEMPT_LIMIT = 20;//LOL
 		Solver solver = new Solver(grid);
 		Random random = new Random();
 		int numberOfTries = 0;
-		while(!success){
-			grid = new Grid();
-			solver = new Solver(grid);
-			int numberToPlace = 0;
-			for(char ch : partition.toCharArray()){
-				int amount = ch - '0';
-				numberToPlace++;
-				
-				for(int j = 0;j<amount;j++){
-					boolean placed = false;
-					int attempts = 0;
-					int bestX = -1;
-					int bestY = -1;
-					int bestPotentialCount = -1;
-					while(!placed){
-						
-						int x = random.nextInt(9);
-						int y = random.nextInt(9);
-						solver.rebuildPotentialValues();
+		ArrayList<String> sudokus = new ArrayList<String>();
+		long startTime = System.currentTimeMillis();
+		while(true){
+			
+			while(!success){
+				grid = new Grid();
+				solver = new Solver(grid);
+				int numberToPlace = 0;
+				for(char ch : partition.toCharArray()){
+					int amount = ch - '0';
+					numberToPlace++;
+					
+					for(int j = 0;j<amount;j++){
+						boolean placed = false;
+						int attempts = 0;
+						int bestX = -1;
+						int bestY = -1;
+						int bestPotentialCount = -1;
+						while(!placed){
+							
+							int x = random.nextInt(9);
+							int y = random.nextInt(9);
+							solver.rebuildPotentialValues();
 
-						if(grid.getCell(x, y).hasPotentialValue(numberToPlace)){
-							attempts++;
-							Cell cell = grid.getCell(x, y);
-							int potentialValuesInHouse = countPotentialValues(cell.getHouseCells(), numberToPlace);
-							if(potentialValuesInHouse > bestPotentialCount){
-								bestX = x;
-								bestY = y;
-								bestPotentialCount = potentialValuesInHouse;
-								
+							if(grid.getCell(x, y).hasPotentialValue(numberToPlace)){
+								attempts++;
+								Cell cell = grid.getCell(x, y);
+								int potentialValuesInHouse = countPotentialValues(cell.getHouseCells(), numberToPlace);
+								if(potentialValuesInHouse > bestPotentialCount){
+									bestX = x;
+									bestY = y;
+									bestPotentialCount = potentialValuesInHouse;
+									
+								}
+							}
+							if(attempts > ATTEMPT_LIMIT){
+								grid.setCellValue(bestX, bestY, numberToPlace);
+								placed = true;
 							}
 						}
-						if(attempts > ATTEMPT_LIMIT){
-							grid.setCellValue(bestX, bestY, numberToPlace);
-							placed = true;
-						}
+						
+						//System.out.println(numberToPlace);
 					}
-					
-					//System.out.println(numberToPlace);
 				}
+				 int state = analyser.getCountSolutions(grid);
+				 if(state == 1){
+					 success = true;
+				 }
+
+				numberOfTries++;
 			}
-			 int state = analyser.getCountSolutions(grid);
-			 if(state == 1){
-				 success = true;
-			 }
-			/*ArrayList<String> test = RecursiveSudokuTransformation.transformSudoku(parser.parseGridToLine(grid)); 
-			if(test.size() != 0){
-				for(String str: test){
-					System.out.println(str);
-					success = true;
-				}
-			}*/
-			//if(numberOfTries%1000 == 0){
-				System.out.println("Number of tries:" + numberOfTries);
-			//}
-			numberOfTries++;
+			sudokus.add(parser.parseGridToLine(grid));
+			long currentTime = System.currentTimeMillis();
+			System.out.println("Time elapsed:" + (float)(currentTime-startTime)/1000);
+			System.out.println("Number of tries:"+numberOfTries);
+			for(String sudk :sudokus){
+				System.out.println(sudk);
+			}
+			success = false;
 		}
+
 		
-		System.out.println(parser.parseGridToLine(grid));
-		
-		System.out.println(solver.getDifficulty());
 		
 		
 	}
